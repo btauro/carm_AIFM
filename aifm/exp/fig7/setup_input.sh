@@ -14,18 +14,18 @@ links=(https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2016-01.csv \
 
 head=yellow_tripdata_2016-01.csv
 
-sudo umount /dev/sda4
-sudo mkfs.ext4 -F /dev/sda4
-sudo mount /dev/sda4 /mnt
-sudo chmod a+rw /mnt
-cd /mnt
+#sudo umount /dev/sda4
+#sudo mkfs.ext4 -F /dev/sda4
+#sudo mount /dev/sda4 /home/mnt
+#sudo chmod a+rw /home/mnt
+cd /home/mnt
 
 for link in "${links[@]}"
 do
     wget "$link"
 done
 
-cat $head > all.csv
+cat $head > /home/all.csv
 
 for file in `ls *.csv`
 do
@@ -35,5 +35,5 @@ do
     if [ "$file" = "$head" ]; then
 	continue
     fi
-    awk '{if (NR > 1) print $0}' $file >> all.csv
+    awk '{if (NR > 1) print $0}' $file >> /home/all.csv
 done

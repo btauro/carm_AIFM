@@ -53,17 +53,22 @@ public:
          const uint8_t *id);
   void init(uint8_t ds_id, uint16_t data_len, uint8_t id_len,
             const uint8_t *id);
+  void init_carm(uint8_t ds_id, uint16_t data_len, uint8_t id_len,
+            const uint8_t *id);
   uint64_t get_addr() const;
   uint16_t get_data_len() const;
   uint8_t get_obj_id_len() const;
   void set_ptr_addr(uint64_t address);
   const uint8_t *get_obj_id() const;
+  const uint8_t *get_obj_id_carm() const;
   uint64_t get_ptr_addr() const;
   uint64_t get_data_addr() const;
+  uint64_t get_data_addr_carm() const;
   void set_ds_id(uint8_t ds_id);
   uint8_t get_ds_id() const;
   void set_data_len(uint16_t data_len);
   void set_obj_id(const uint8_t *id, uint8_t id_len);
+  void set_obj_id_carm(const uint8_t *id, uint8_t id_len);
   void set_obj_id_len(uint8_t id_len);
   uint16_t size() const;
   bool is_freed() const;

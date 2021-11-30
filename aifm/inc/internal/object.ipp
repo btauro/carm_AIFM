@@ -3,6 +3,8 @@
 #include "helpers.hpp"
 
 #include <cstring>
+#include <iostream>
+
 
 namespace far_memory {
 
@@ -22,6 +24,14 @@ FORCE_INLINE void Object::init(uint8_t ds_id, uint16_t data_len, uint8_t id_len,
   set_data_len(data_len);
   set_obj_id_len(id_len);
   set_obj_id(id, id_len);
+}
+
+FORCE_INLINE void Object::init_carm(uint8_t ds_id, uint16_t data_len, uint8_t id_len,
+                               const uint8_t *id) {
+  set_ds_id(ds_id);
+  set_data_len(data_len);
+  set_obj_id_len(id_len);
+  set_obj_id_carm(id, id_len);
 }
 
 FORCE_INLINE void Object::set_ds_id(uint8_t ds_id) {
@@ -70,6 +80,18 @@ FORCE_INLINE void Object::set_obj_id(const uint8_t *id, uint8_t id_len) {
   auto *ptr = reinterpret_cast<void *>(addr_ + offset);
   memcpy(ptr, id, id_len);
 }
+//obj ide stored along with header in carm
+FORCE_INLINE void Object::set_obj_id_carm(const uint8_t *id, uint8_t id_len) {
+  auto offset = kHeaderSize;
+  auto *ptr = reinterpret_cast<void *>(addr_ + offset);
+  memcpy(ptr, id, id_len);
+}
+
+FORCE_INLINE const uint8_t *Object::get_obj_id_carm() const {
+  auto offset = kHeaderSize;
+  auto *ptr = reinterpret_cast<const uint8_t *>(addr_ + offset);
+  return ptr;
+}
 
 FORCE_INLINE const uint8_t *Object::get_obj_id() const {
   auto offset = kHeaderSize + get_data_len();
@@ -91,6 +113,10 @@ FORCE_INLINE uint64_t Object::get_ptr_addr() const {
 
 FORCE_INLINE uint64_t Object::get_data_addr() const {
   return addr_ + kHeaderSize;
+}
+
+FORCE_INLINE uint64_t Object::get_data_addr_carm() const {
+  return addr_ + kHeaderSize + get_obj_id_len();
 }
 
 FORCE_INLINE uint16_t Object::size() const {
