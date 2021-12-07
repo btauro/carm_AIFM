@@ -272,6 +272,11 @@ FORCE_INLINE const void *GenericUniquePtr::deref(const DerefScope &scope) {
 }
 
 template <bool Nt>
+FORCE_INLINE const void *GenericUniquePtr::deref() {
+  return reinterpret_cast<const void *>(_deref</* Mut = */ false, Nt>());
+}
+
+template <bool Nt>
 FORCE_INLINE void *GenericUniquePtr::deref_mut(const DerefScope &scope) {
   return _deref</* Mut = */ true, Nt>();
 }
