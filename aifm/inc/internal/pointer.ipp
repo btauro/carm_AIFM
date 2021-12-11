@@ -280,6 +280,10 @@ template <bool Nt>
 FORCE_INLINE void *GenericUniquePtr::deref_mut(const DerefScope &scope) {
   return _deref</* Mut = */ true, Nt>();
 }
+template <bool Nt>
+FORCE_INLINE void *GenericUniquePtr::deref_mut() {
+  return _deref</* Mut = */ true, Nt>();
+}
 
 template <typename T>
 FORCE_INLINE UniquePtr<T>::UniquePtr(uint64_t object_addr)

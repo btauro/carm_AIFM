@@ -138,6 +138,7 @@ public:
   template <bool Mut, bool Nt> void *_deref();
   template <bool Nt = false> const void *deref(const DerefScope &scope);
   template <bool Nt = false> const void *deref();
+  template <bool Nt = false> void *deref_mut();
   template <bool Nt = false> void *deref_mut(const DerefScope &scope);
   void free(bool race = false);
 };
@@ -185,6 +186,7 @@ public:
   GenericSharedPtr(GenericSharedPtr &&other);
   GenericSharedPtr &operator=(GenericSharedPtr &&other);
   template <bool Mut, bool Nt> void *_deref();
+  template <bool Nt = false> void *deref_mut();
   template <bool Nt = false> const void *deref(const DerefScope &scope);
   template <bool Nt = false> void *deref_mut(const DerefScope &scope);
   void free();
