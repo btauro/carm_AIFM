@@ -145,6 +145,8 @@ FORCE_INLINE Object GenericFarMemPtr::object() { return meta_.object(); }
 
 FORCE_INLINE FarMemPtrMeta &GenericFarMemPtr::meta() { return meta_; }
 
+//FarMemPtrMeta &GenericFarMemPtr::meta() { return meta_; }
+
 FORCE_INLINE const FarMemPtrMeta &GenericFarMemPtr::meta() const {
   return meta_;
 }

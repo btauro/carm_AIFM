@@ -32,6 +32,7 @@ extern "C" {
 #include <utility>
 #include <vector>
 
+extern void delete_cache_object(far_memory::GenericFarMemPtr * meta);
 namespace far_memory {
 ObjLocker FarMemManager::obj_locker_;
 FarMemManager *FarMemManagerFactory::ptr_;
@@ -255,13 +256,12 @@ FarMemManager::RegionManager::RegionManager(uint64_t size, bool is_local) {
 void FarMemManager::swap_in(bool nt, GenericFarMemPtr *ptr) {
   assert(preempt_enabled());
 
-  auto &meta = ptr->meta();
-  auto obj_id = meta.get_object_id();
-  rmb();
-  if (unlikely(meta.is_present())) {
+  auto meta_snapshot = ptr->meta();
+  if (unlikely(meta_snapshot.is_present())) {
     return;
   }
 
+  auto obj_id = meta_snapshot.get_object_id();
   FarMemManager::lock_object(sizeof(obj_id),
                              reinterpret_cast<const uint8_t *>(&obj_id));
   auto guard = helpers::finally([&]() {
@@ -269,6 +269,7 @@ void FarMemManager::swap_in(bool nt, GenericFarMemPtr *ptr) {
                                  reinterpret_cast<const uint8_t *>(&obj_id));
   });
 
+  auto &meta = ptr->meta();
   if (likely(!meta.is_present())) {
     auto obj_addr = allocate_local_object(nt, meta.get_object_size());
     auto obj = Object(obj_addr);
@@ -473,7 +474,6 @@ void FarMemManager::wait_mutators_observation() {
   set_self_th_status(GC);
 #endif
 }
-
 GCParallelWriteBacker::GCParallelWriteBacker(uint32_t num_slaves,
                                              uint32_t task_queues_depth,
                                              std::vector<Region> *from_regions)
@@ -498,8 +498,10 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
           auto guard = helpers::finally(
               [&]() { FarMemManager::unlock_object(obj_id_len, obj_id); });
           if (likely(!obj.is_freed())) {
+
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
+	    delete_cache_object(ptr); 
             manager->swap_out(ptr, obj);
           }
         }

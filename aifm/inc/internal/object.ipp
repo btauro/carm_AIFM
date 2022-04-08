@@ -3,8 +3,6 @@
 #include "helpers.hpp"
 
 #include <cstring>
-#include <iostream>
-
 
 namespace far_memory {
 

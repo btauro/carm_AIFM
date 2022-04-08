@@ -102,7 +102,6 @@ protected:
   GenericFarMemPtr(bool shared, uint64_t object_addr);
   void init(bool shared, uint64_t object_addr);
   Object object();
-  FarMemPtrMeta &meta();
   const FarMemPtrMeta &meta() const;
   bool mutator_migrate_object();
   template <bool Shared> auto pin(void **pinned_raw_ptr = nullptr);
@@ -110,6 +109,14 @@ protected:
   void _flush(bool obj_locked);
 
 public:
+  FarMemPtrMeta &meta();
+  uint64_t cache_index;
+  void set_cache_index(uint64_t index) {
+	  cache_index = index;
+  }
+  uint64_t get_cache_index() {
+	  return cache_index;
+  }
   void nullify();
   bool is_null() const;
   void swap_in(bool nt);
