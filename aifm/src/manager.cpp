@@ -42,12 +42,17 @@ bool gc_master_active;
 bool almost_empty;
 
 void GCParallelizer::master_fn() {
+  auto *manager = FarMemManagerFactory::get();
+
   for (auto &from_region : *from_regions_) {
+		if ((manager->not_evacutable_region_addr == 0) ||  ((uint64_t)from_region.buf_ptr_) != manager->not_evacutable_region_addr) {
     for (uint8_t j = 0; j < from_region.get_num_boundaries(); j++) {
       master_enqueue_task(from_region.get_boundary(j));
     }
   }
 }
+}
+
 
 FarMemManager::FarMemManager(uint64_t cache_size, uint64_t far_mem_size,
                              uint32_t num_gc_threads, FarMemDevice *device)

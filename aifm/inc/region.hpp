@@ -31,7 +31,6 @@ public:
 
 private:
   uint32_t first_free_byte_idx_ = kObjectPos;
-  uint8_t *buf_ptr_ = nullptr;
   int32_t region_idx_ = kInvalidIdx;
   uint8_t num_boundaries_ = 0;
   uint32_t gc_boundaries_[kGCParallelism];
@@ -39,6 +38,7 @@ private:
   void update_boundaries(bool force);
 
 public:
+  uint8_t *buf_ptr_ = nullptr;
   Region();
   Region(uint32_t idx, bool is_local, bool nt, uint8_t *buf_ptr);
   NOT_COPYABLE(Region);

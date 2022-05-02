@@ -146,6 +146,15 @@ public:
   using EvacNotifier = std::function<bool(Object, WriteObjectFn)>;
   using CopyNotifier = std::function<void(Object dest, Object src)>;
 
+	uint64_t not_evacutable_region_addr = 0;
+	void mark_region_not_evacutable(uint64_t object_addr) {
+							auto region_addr = (object_addr) & (~(Region::kSize - 1));
+							not_evacutable_region_addr = region_addr;
+			}
+
+			void invalidate_marked_region() {
+							not_evacutable_region_addr = 0;
+			} 
   uint32_t num_gc_threads_;
   EvacNotifier evac_notifiers_[kMaxNumDSIDs];
   CopyNotifier copy_notifiers_[kMaxNumDSIDs];
