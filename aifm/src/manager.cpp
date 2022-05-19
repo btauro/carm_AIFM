@@ -33,6 +33,7 @@ extern "C" {
 #include <vector>
 
 extern void delete_cache_object(far_memory::GenericFarMemPtr * meta);
+extern void update_cache_object(far_memory::GenericFarMemPtr * meta);
 namespace far_memory {
 ObjLocker FarMemManager::obj_locker_;
 FarMemManager *FarMemManagerFactory::ptr_;
@@ -45,7 +46,7 @@ void GCParallelizer::master_fn() {
   auto *manager = FarMemManagerFactory::get();
 
   for (auto &from_region : *from_regions_) {
-		if ((manager->not_evacutable_region_addr == 0) ||  ((uint64_t)from_region.buf_ptr_) != manager->not_evacutable_region_addr) {
+		if ((manager->not_evacutable_region_addr == 0) ||  ((uint64_t)from_region.buf_ptr_ != manager->not_evacutable_region_addr)) {
     for (uint8_t j = 0; j < from_region.get_num_boundaries(); j++) {
       master_enqueue_task(from_region.get_boundary(j));
     }
@@ -506,8 +507,8 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
 
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
-	    delete_cache_object(ptr); 
             manager->swap_out(ptr, obj);
+						update_cache_object(ptr);
           }
         }
         cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));

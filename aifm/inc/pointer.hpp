@@ -110,13 +110,13 @@ protected:
 
 public:
   FarMemPtrMeta &meta();
-  uint64_t cache_index;
-  void set_cache_index(uint64_t index) {
-	  cache_index = index;
-  }
-  uint64_t get_cache_index() {
-	  return cache_index;
-  }
+  uint64_t carm_obj_index =  0xfffffffffffff;
+	void set_carm_obj_index(uint64_t index) {
+	  carm_obj_index = index;
+	}
+	uint64_t get_carm_obj_index() {
+	  return carm_obj_index;
+	}
   void nullify();
   bool is_null() const;
   void swap_in(bool nt);

@@ -37,7 +37,7 @@ public:
 
 class FakeDevice : public FarMemDevice {
 private:
-  constexpr static uint32_t kPrefetchWinSize = 1 << 20;
+  constexpr static uint32_t kPrefetchWinSize = 1ULL << 20;
   Server server_;
 
 public:
@@ -58,7 +58,7 @@ public:
 
 class TCPDevice : public FarMemDevice {
 private:
-  constexpr static uint32_t kPrefetchWinSize = 1 << 20;
+  constexpr static uint32_t kPrefetchWinSize = 1ULL << 20;
 
   tcpconn_t *remote_master_;
   SharedPool<tcpconn_t *> shared_pool_;
