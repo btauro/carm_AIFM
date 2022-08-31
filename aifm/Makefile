@@ -118,7 +118,7 @@ override CXXFLAGS += -std=gnu++2a -fconcepts -Wno-unused-function
 CXXFLAGS := $(filter-out -std=gnu++17,$(CXXFLAGS))
 override LDFLAGS += -lnuma
 
-all: libaifm.a
+all: libaifm.a bin/tcp_device_server
 
 
 $(tcp_device_server_obj): $(tcp_device_server_src)
