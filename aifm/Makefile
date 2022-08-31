@@ -127,6 +127,8 @@ $(tcp_device_server_obj): $(tcp_device_server_src)
 libaifm.a: $(lib_obj)
 	$(AR) rcs $@ $^
 
+bin/tcp_device_server: $(tcp_device_server_obj) $(lib_obj)
+	$(LDXX) -o $@ $(tcp_device_server_obj) $(lib_obj) $(librt_libs) $(RUNTIME_LIBS) $(LDFLAGS)
 #rule to generate a dep file by using the C preprocessor
 #(see man cpp for details on the - MM and - MT options)
 %.d: %.cpp
