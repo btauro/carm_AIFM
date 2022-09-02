@@ -508,7 +508,7 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
             manager->swap_out(ptr, obj);
-						update_cache_object(ptr);
+	    update_cache_object(ptr);
           }
         }
         cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
