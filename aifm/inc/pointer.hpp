@@ -70,6 +70,7 @@ public:
   void set_evacuation();
   bool is_evacuation() const;
   bool is_shared() const;
+  void set_ptr(Object * obj);
   void set_shared();
   uint64_t get_object_id() const;
   uint64_t get_object_data_addr() const;

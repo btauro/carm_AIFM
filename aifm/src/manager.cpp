@@ -438,13 +438,18 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
           if (likely(!obj.is_freed())) {
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
+
+						if (ptr) {
+
             if (!ptr->meta().is_shared()) {
               ptr->meta().set_evacuation();
+	    			  update_cache_object(ptr);
             } else {
               reinterpret_cast<GenericSharedPtr *>(ptr)->traverse(
                   [](GenericSharedPtr *ptr) { ptr->meta().set_evacuation(); });
             }
           }
+}
         }
         cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
       }
@@ -508,7 +513,7 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
             manager->swap_out(ptr, obj);
-	    update_cache_object(ptr);
+	    			update_cache_object(ptr);
           }
         }
         cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
