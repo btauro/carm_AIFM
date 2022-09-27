@@ -43,15 +43,12 @@ bool gc_master_active;
 bool almost_empty;
 
 void GCParallelizer::master_fn() {
-  auto *manager = FarMemManagerFactory::get();
 
   for (auto &from_region : *from_regions_) {
-		if ((manager->not_evacutable_region_addr == 0) ||  ((uint64_t)from_region.buf_ptr_ != manager->not_evacutable_region_addr)) {
-    for (uint8_t j = 0; j < from_region.get_num_boundaries(); j++) {
-      master_enqueue_task(from_region.get_boundary(j));
+      for (uint8_t j = 0; j < from_region.get_num_boundaries(); j++) {
+        master_enqueue_task(from_region.get_boundary(j));
     }
   }
-}
 }
 
 
@@ -290,6 +287,7 @@ void FarMemManager::swap_in(bool nt, GenericFarMemPtr *ptr) {
              reinterpret_cast<uint8_t *>(&obj_id));
     if (!meta.is_shared()) {
       meta.set_present(obj_addr);
+      //meta.metadata_[FarMemPtrMeta::kHotPos]--;
     } else {
       reinterpret_cast<GenericSharedPtr *>(ptr)->traverse(
           [=](GenericFarMemPtr *ptr) { ptr->meta().set_present(obj_addr); });
@@ -397,14 +395,18 @@ void FarMemManager::pick_from_regions() {
       std::min(kMaxNumRegionsPerGCRound,
                static_cast<uint32_t>(ratio_per_gc_round *
                                      cache_region_manager_.get_num_regions()));
+    auto *manager = FarMemManagerFactory::get();
   do {
     auto optional_region = pop_cache_used_region();
     if (unlikely(!optional_region)) {
       break;
     }
+    auto val = manager->not_evacutable_region_addr.find((uint64_t)((*optional_region).buf_ptr_));
+    if ((val == manager->not_evacutable_region_addr.end()) ||  ((val != manager->not_evacutable_region_addr.end())  && (val->second == 0))) {
     preempt_disable();
     from_regions_.push_back(std::move(*optional_region));
     preempt_enable();
+    }
   } while (from_regions_.size() < num_regions_per_gc_round);
 }
 
