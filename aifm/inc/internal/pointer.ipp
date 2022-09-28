@@ -219,6 +219,55 @@ retry:
                                   FarMemPtrMeta::kObjectDataAddrBitPos);
 }
 
+template <bool Mut, bool Nt, bool Shared>
+FORCE_INLINE uint64_t GenericFarMemPtr::__deref() {
+retry:
+  // 1) movq.
+  auto metadata = meta().to_uint64_t();
+  auto exceptions = (FarMemPtrMeta::kHotClear | FarMemPtrMeta::kPresentClear |
+                     FarMemPtrMeta::kEvacuationSet);
+  if constexpr (Mut) {
+    exceptions |= FarMemPtrMeta::kDirtyClear;
+  }
+  // 2) test. 3) jne. They got macro-fused into a single uop.
+  if (very_likely(metadata & exceptions)) {
+    // Slow path.
+    if (very_likely(metadata & (FarMemPtrMeta::kPresentClear |
+                                  FarMemPtrMeta::kEvacuationSet))) {
+      if (metadata & FarMemPtrMeta::kPresentClear) {
+        if (meta().is_null()) {
+          // In this case, _deref() returns nullptr.
+          return 0;
+        }
+        swap_in(Nt);
+        // Just swapped in, need to update metadata (for the obj data addr).
+        metadata = meta().to_uint64_t();
+      } else {
+        if (!mutator_migrate_object()) {
+          // GC or another thread wins the race. They may still need a while to
+          // finish migrating the object. Yielding itself rather than busy
+          // retrying now.
+          thread_yield();
+        }
+      }
+      goto retry;
+    }
+    if constexpr (Mut) {
+      // set P and D.
+      if constexpr (!Shared) {
+        __asm__("movb $0, %0"
+                : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
+      } else {
+        __asm__("movb $2, %0"
+                : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
+      }
+    }
+    meta().metadata_[FarMemPtrMeta::kHotPos]--;
+  }
+
+  // 4) shrq.
+  return reinterpret_cast<uint64_t>(metadata);
+}
 template <bool Shared>
 FORCE_INLINE auto GenericFarMemPtr::pin(void **pinned_raw_ptr) {
   bool in_scope = DerefScope::is_in_deref_scope();
@@ -273,6 +322,13 @@ FORCE_INLINE const void *GenericUniquePtr::deref(const DerefScope &scope) {
   return reinterpret_cast<const void *>(_deref</* Mut = */ false, Nt>());
 }
 
+template <bool Mut, bool Nt> FORCE_INLINE uint64_t GenericUniquePtr::__deref() {
+  return GenericFarMemPtr::__deref<Mut, Nt, /* Shared = */ false>();
+}
+template <bool Nt>
+FORCE_INLINE const uint64_t GenericUniquePtr::__deref() {
+  return __deref</* Mut = */ false, Nt>();
+}
 template <bool Nt>
 FORCE_INLINE const void *GenericUniquePtr::deref() {
   return reinterpret_cast<const void *>(_deref</* Mut = */ false, Nt>());
@@ -281,6 +337,10 @@ FORCE_INLINE const void *GenericUniquePtr::deref() {
 template <bool Nt>
 FORCE_INLINE void *GenericUniquePtr::deref_mut(const DerefScope &scope) {
   return _deref</* Mut = */ true, Nt>();
+}
+template <bool Nt>
+FORCE_INLINE uint64_t GenericUniquePtr::__deref_mut() {
+  return __deref</* Mut = */ true, Nt>();
 }
 template <bool Nt>
 FORCE_INLINE void *GenericUniquePtr::deref_mut() {

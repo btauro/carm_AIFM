@@ -107,6 +107,7 @@ protected:
   bool mutator_migrate_object();
   template <bool Shared> auto pin(void **pinned_raw_ptr = nullptr);
   template <bool Mut, bool Nt, bool Shared> void *_deref();
+  template <bool Mut, bool Nt, bool Shared> uint64_t __deref();
   void _flush(bool obj_locked);
 
 public:
@@ -144,9 +145,12 @@ public:
   GenericUniquePtr &operator=(GenericUniquePtr &&other);
   NOT_COPYABLE(GenericUniquePtr);
   template <bool Mut, bool Nt> void *_deref();
+  template <bool Mut, bool Nt> uint64_t __deref();
   template <bool Nt = false> const void *deref(const DerefScope &scope);
   template <bool Nt = false> const void *deref();
+  template <bool Nt = false> const uint64_t __deref();
   template <bool Nt = false> void *deref_mut();
+  template <bool Nt = false> uint64_t __deref_mut();
   template <bool Nt = false> void *deref_mut(const DerefScope &scope);
   void free(bool race = false);
 };
