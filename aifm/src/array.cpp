@@ -2,6 +2,7 @@
 #include "internal/ds_info.hpp"
 #include "manager.hpp"
 #include "pointer.hpp"
+#include <iostream>
 
 namespace far_memory {
 

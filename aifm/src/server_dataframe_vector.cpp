@@ -23,7 +23,7 @@ template <typename T> ServerDataFrameVector<T>::~ServerDataFrameVector() {}
 template <typename T>
 void ServerDataFrameVector<T>::read_object(uint8_t obj_id_len,
                                            const uint8_t *obj_id,
-                                           uint16_t *data_len,
+                                           uint32_t *data_len,
                                            uint8_t *data_buf) {
   auto reader_lock = lock_.get_reader_lock();
   uint64_t index;
@@ -40,7 +40,7 @@ void ServerDataFrameVector<T>::read_object(uint8_t obj_id_len,
 template <typename T>
 void ServerDataFrameVector<T>::write_object(uint8_t obj_id_len,
                                             const uint8_t *obj_id,
-                                            uint16_t data_len,
+                                            uint32_t data_len,
                                             const uint8_t *data_buf) {
   auto reader_lock = lock_.get_reader_lock();
   uint64_t index;

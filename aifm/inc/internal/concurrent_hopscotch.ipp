@@ -13,7 +13,7 @@ FORCE_INLINE GenericConcurrentHopscotch::BucketEntry::BucketEntry() {
 
 FORCE_INLINE void GenericConcurrentHopscotch::_get(uint8_t key_len,
                                                    const uint8_t *key,
-                                                   uint16_t *val_len,
+                                                   uint32_t *val_len,
                                                    uint8_t *val,
                                                    bool *forwarded) {
   bool miss = __get(key_len, key, val_len, val);
@@ -28,14 +28,14 @@ FORCE_INLINE void GenericConcurrentHopscotch::_get(uint8_t key_len,
 FORCE_INLINE void GenericConcurrentHopscotch::get(const DerefScope &scope,
                                                   uint8_t key_len,
                                                   const uint8_t *key,
-                                                  uint16_t *val_len,
+                                                  uint32_t *val_len,
                                                   uint8_t *val) {
   _get(key_len, key, val_len, val, nullptr);
 }
 
 FORCE_INLINE void GenericConcurrentHopscotch::get_tp(uint8_t key_len,
                                                      const uint8_t *key,
-                                                     uint16_t *val_len,
+                                                     uint32_t *val_len,
                                                      uint8_t *val) {
   DerefScope scope;
   get(scope, key_len, key, val_len, val);
@@ -44,14 +44,14 @@ FORCE_INLINE void GenericConcurrentHopscotch::get_tp(uint8_t key_len,
 FORCE_INLINE bool GenericConcurrentHopscotch::put(const DerefScope &scope,
                                                   uint8_t key_len,
                                                   const uint8_t *key,
-                                                  uint16_t val_len,
+                                                  uint32_t val_len,
                                                   const uint8_t *val) {
   return _put(key_len, key, val_len, val, /* swap_in = */ false);
 }
 
 FORCE_INLINE bool GenericConcurrentHopscotch::put_tp(uint8_t key_len,
                                                      const uint8_t *key,
-                                                     uint16_t val_len,
+                                                     uint32_t val_len,
                                                      const uint8_t *val) {
   DerefScope scope;
   return put(scope, key_len, key, val_len, val);
@@ -87,7 +87,7 @@ FORCE_INLINE void GenericConcurrentHopscotch::evac_notifier(Object object) {
 
 FORCE_INLINE bool GenericConcurrentHopscotch::__get(uint8_t key_len,
                                                     const uint8_t *key,
-                                                    uint16_t *val_len,
+                                                    uint32_t *val_len,
                                                     uint8_t *val) {
   uint32_t hash = hash_32(reinterpret_cast<const void *>(key), key_len);
   uint32_t bucket_idx = hash & kHashMask_;
@@ -164,7 +164,7 @@ FORCE_INLINE ConcurrentHopscotch<K, V>::ConcurrentHopscotch(
 
 template <typename K, typename V>
 FORCE_INLINE std::optional<V> ConcurrentHopscotch<K, V>::_find(const K &key) {
-  uint16_t val_len;
+  uint32_t val_len;
   V val;
   _get(sizeof(key), reinterpret_cast<const uint8_t *>(&key), &val_len,
        reinterpret_cast<uint8_t *>(&val), nullptr);

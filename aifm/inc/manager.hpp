@@ -126,10 +126,10 @@ private:
   void launch_gc_master();
   void gc_cache();
   void gc_far_mem();
-  uint64_t allocate_local_object(bool nt, uint16_t object_size);
+  uint64_t allocate_local_object(bool nt, uint32_t object_size);
   std::optional<uint64_t> allocate_local_object_nb(bool nt,
-                                                   uint16_t object_size);
-  uint64_t allocate_remote_object(bool nt, uint16_t object_size);
+                                                   uint32_t object_size);
+  uint64_t allocate_remote_object(bool nt, uint32_t object_size);
   void mutator_wait_for_gc_far_mem();
   void pick_from_regions();
   void mark_fm_ptrs(auto *preempt_guard);
@@ -175,16 +175,16 @@ public:
   FarMemDevice *get_device() const { return device_ptr_.get(); }
   double get_free_mem_ratio() const;
   bool allocate_generic_unique_ptr_nb(
-      GenericUniquePtr *ptr, uint8_t ds_id, uint16_t item_size,
+      GenericUniquePtr *ptr, uint8_t ds_id, uint32_t item_size,
       std::optional<uint8_t> optional_id_len = {},
       std::optional<const uint8_t *> optional_id = {});
   GenericUniquePtr
-  allocate_generic_unique_ptr(uint8_t ds_id, uint16_t item_size,
+  allocate_generic_unique_ptr(uint8_t ds_id, uint32_t item_size,
                               std::optional<uint8_t> optional_id_len = {},
                               std::optional<const uint8_t *> optional_id = {});
   bool reallocate_generic_unique_ptr_nb(const DerefScope &scope,
                                         GenericUniquePtr *ptr,
-                                        uint16_t new_item_size,
+                                        uint32_t new_item_size,
                                         const uint8_t *data_buf);
   template <typename T>
   UniquePtr<T> allocate_unique_ptr(uint8_t ds_id = kVanillaPtrDSID);
@@ -220,7 +220,7 @@ public:
   void register_eval_notifier(uint8_t ds_id, EvacNotifier notifier);
   void register_copy_notifier(uint8_t ds_id, CopyNotifier notifier);
   void read_object(uint8_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id,
-                   uint16_t *data_len, uint8_t *data_buf);
+                   uint32_t *data_len, uint8_t *data_buf);
   bool remove_object(uint64_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id);
   void construct(uint8_t ds_type, uint8_t ds_id, uint32_t param_len,
                  uint8_t *params);

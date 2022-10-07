@@ -20,7 +20,7 @@ ServerPtr::ServerPtr(uint32_t param_len, uint8_t *params) {
 ServerPtr::~ServerPtr() {}
 
 void ServerPtr::read_object(uint8_t obj_id_len, const uint8_t *obj_id,
-                            uint16_t *data_len, uint8_t *data_buf) {
+                            uint32_t *data_len, uint8_t *data_buf) {
   const uint64_t &object_id = *(reinterpret_cast<const uint64_t *>(obj_id));
   assert(obj_id_len == sizeof(decltype(object_id)));
   auto remote_object_addr = reinterpret_cast<uint64_t>(buf_.get()) + object_id;
@@ -31,7 +31,7 @@ void ServerPtr::read_object(uint8_t obj_id_len, const uint8_t *obj_id,
 }
 
 void ServerPtr::write_object(uint8_t obj_id_len, const uint8_t *obj_id,
-                             uint16_t data_len, const uint8_t *data_buf) {
+                             uint32_t data_len, const uint8_t *data_buf) {
   const uint64_t &object_id = *(reinterpret_cast<const uint64_t *>(obj_id));
   assert(obj_id_len == sizeof(decltype(object_id)));
   auto remote_object_addr = reinterpret_cast<uint64_t>(buf_.get()) + object_id;

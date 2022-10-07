@@ -56,13 +56,13 @@ private:
                              uint64_t remote_data_size);
   NOT_COPYABLE(GenericConcurrentHopscotch);
   NOT_MOVEABLE(GenericConcurrentHopscotch);
-  bool __get(uint8_t key_len, const uint8_t *key, uint16_t *val_len,
+  bool __get(uint8_t key_len, const uint8_t *key, uint32_t *val_len,
              uint8_t *val);
-  void forward_get(uint8_t key_len, const uint8_t *key, uint16_t *val_len,
+  void forward_get(uint8_t key_len, const uint8_t *key, uint32_t *val_len,
                    uint8_t *val);
-  void _get(uint8_t key_len, const uint8_t *key, uint16_t *val_len,
+  void _get(uint8_t key_len, const uint8_t *key, uint32_t *val_len,
             uint8_t *val, bool *forwarded);
-  bool _put(uint8_t key_len, const uint8_t *key, uint16_t val_len,
+  bool _put(uint8_t key_len, const uint8_t *key, uint32_t val_len,
             const uint8_t *val, bool swap_in);
   bool _remove(uint8_t key_len, const uint8_t *key);
   void process_evac_notifier_stash();
@@ -74,12 +74,12 @@ public:
 
   ~GenericConcurrentHopscotch();
   void get(const DerefScope &scope, uint8_t key_len, const uint8_t *key,
-           uint16_t *val_len, uint8_t *val);
-  void get_tp(uint8_t key_len, const uint8_t *key, uint16_t *val_len,
+           uint32_t *val_len, uint8_t *val);
+  void get_tp(uint8_t key_len, const uint8_t *key, uint32_t *val_len,
               uint8_t *val);
   bool put(const DerefScope &scope, uint8_t key_len, const uint8_t *key,
-           uint16_t val_len, const uint8_t *val);
-  bool put_tp(uint8_t key_len, const uint8_t *key, uint16_t val_len,
+           uint32_t val_len, const uint8_t *val);
+  bool put_tp(uint8_t key_len, const uint8_t *key, uint32_t val_len,
               const uint8_t *val);
   bool remove(const DerefScope &scope, uint8_t key_len, const uint8_t *key);
   bool remove_tp(uint8_t key_len, const uint8_t *key);

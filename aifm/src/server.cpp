@@ -37,7 +37,7 @@ void Server::destruct(uint8_t ds_id) {
 }
 
 void Server::read_object(uint8_t ds_id, uint8_t obj_id_len,
-                         const uint8_t *obj_id, uint16_t *data_len,
+                         const uint8_t *obj_id, uint32_t *data_len,
                          uint8_t *data_buf) {
   auto ds_ptr = server_ds_ptrs_[ds_id].get();
   if (!ds_ptr) {
@@ -47,7 +47,7 @@ void Server::read_object(uint8_t ds_id, uint8_t obj_id_len,
 }
 
 void Server::write_object(uint8_t ds_id, uint8_t obj_id_len,
-                          const uint8_t *obj_id, uint16_t data_len,
+                          const uint8_t *obj_id, uint32_t data_len,
                           const uint8_t *data_buf) {
   auto ds_ptr = server_ds_ptrs_[ds_id].get();
   if (!ds_ptr) {

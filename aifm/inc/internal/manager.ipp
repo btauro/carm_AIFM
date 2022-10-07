@@ -129,7 +129,7 @@ FORCE_INLINE void FarMemManager::register_copy_notifier(uint8_t ds_id,
 
 FORCE_INLINE void FarMemManager::read_object(uint8_t ds_id, uint8_t obj_id_len,
                                              const uint8_t *obj_id,
-                                             uint16_t *data_len,
+                                             uint32_t *data_len,
                                              uint8_t *data_buf) {
   device_ptr_->read_object(ds_id, obj_id_len, obj_id, data_len, data_buf);
 }

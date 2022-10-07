@@ -16,10 +16,10 @@ private:
 #pragma pack(push, 1)
   struct KVDataHeader {
     uint8_t key_len;
-    uint16_t val_len;
+    uint32_t val_len;
   };
 #pragma pack(pop)
-  static_assert(sizeof(KVDataHeader) == 3);
+  static_assert(sizeof(KVDataHeader) == 5);
 
 #pragma pack(push, 1)
   struct BucketEntry {
@@ -52,9 +52,9 @@ public:
   LocalGenericConcurrentHopscotch(uint32_t num_entries_shift,
                                   uint64_t data_size);
   ~LocalGenericConcurrentHopscotch();
-  void get(uint8_t key_len, const uint8_t *key, uint16_t *val_len, uint8_t *val,
+  void get(uint8_t key_len, const uint8_t *key, uint32_t *val_len, uint8_t *val,
            bool remove = false);
-  bool put(uint8_t key_len, const uint8_t *key, uint16_t val_len,
+  bool put(uint8_t key_len, const uint8_t *key, uint32_t val_len,
            const uint8_t *val);
   bool remove(uint8_t key_len, const uint8_t *key);
 };

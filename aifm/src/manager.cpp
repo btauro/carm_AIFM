@@ -88,7 +88,7 @@ FarMemManager::~FarMemManager() {
 }
 
 bool FarMemManager::allocate_generic_unique_ptr_nb(
-    GenericUniquePtr *ptr, uint8_t ds_id, uint16_t item_size,
+    GenericUniquePtr *ptr, uint8_t ds_id, uint32_t item_size,
     std::optional<uint8_t> optional_id_len,
     std::optional<const uint8_t *> optional_id) {
   assert(item_size <= Object::kMaxObjectDataSize);
@@ -104,11 +104,11 @@ bool FarMemManager::allocate_generic_unique_ptr_nb(
   ptr->init(local_object_addr);
   if (!optional_id_len) {
     auto remote_object_addr = allocate_remote_object(false, object_size);
-    Object(local_object_addr, ds_id, static_cast<uint16_t>(item_size),
+    Object(local_object_addr, ds_id, static_cast<uint32_t>(item_size),
            static_cast<uint8_t>(sizeof(remote_object_addr)),
            reinterpret_cast<const uint8_t *>(&remote_object_addr));
   } else {
-    Object(local_object_addr, ds_id, static_cast<uint16_t>(item_size),
+    Object(local_object_addr, ds_id, static_cast<uint32_t>(item_size),
            *optional_id_len, *optional_id);
   }
   Region::atomic_inc_ref_cnt(local_object_addr, -1);
@@ -116,7 +116,7 @@ bool FarMemManager::allocate_generic_unique_ptr_nb(
 }
 
 GenericUniquePtr FarMemManager::allocate_generic_unique_ptr(
-    uint8_t ds_id, uint16_t item_size, std::optional<uint8_t> optional_id_len,
+    uint8_t ds_id, uint32_t item_size, std::optional<uint8_t> optional_id_len,
     std::optional<const uint8_t *> optional_id) {
   assert(item_size <= Object::kMaxObjectDataSize);
   auto object_size =
@@ -126,11 +126,11 @@ GenericUniquePtr FarMemManager::allocate_generic_unique_ptr(
   auto ptr = GenericUniquePtr(local_object_addr);
   if (!optional_id_len) {
     auto remote_object_addr = allocate_remote_object(false, object_size);
-    Object(local_object_addr, ds_id, static_cast<uint16_t>(item_size),
+    Object(local_object_addr, ds_id, static_cast<uint32_t>(item_size),
            static_cast<uint8_t>(sizeof(remote_object_addr)),
            reinterpret_cast<const uint8_t *>(&remote_object_addr));
   } else {
-    Object(local_object_addr, ds_id, static_cast<uint16_t>(item_size),
+    Object(local_object_addr, ds_id, static_cast<uint32_t>(item_size),
            *optional_id_len, *optional_id);
   }
   Region::atomic_inc_ref_cnt(local_object_addr, -1);
@@ -277,7 +277,7 @@ void FarMemManager::swap_in(bool nt, GenericFarMemPtr *ptr) {
     auto obj_addr = allocate_local_object(nt, meta.get_object_size());
     auto obj = Object(obj_addr);
     auto ds_id = meta.get_ds_id();
-    uint16_t obj_data_len;
+    uint32_t obj_data_len;
     auto obj_data_addr = reinterpret_cast<uint8_t *>(obj.get_data_addr());
     device_ptr_->read_object(ds_id, sizeof(obj_id),
                              reinterpret_cast<uint8_t *>(&obj_id),
@@ -445,7 +445,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
 
             if (!ptr->meta().is_shared()) {
               ptr->meta().set_evacuation();
-	    			  update_cache_object(ptr);
+	    			//  update_cache_object(ptr);
             } else {
               reinterpret_cast<GenericSharedPtr *>(ptr)->traverse(
                   [](GenericSharedPtr *ptr) { ptr->meta().set_evacuation(); });
@@ -453,7 +453,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
           }
 }
         }
-        cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
+        cur += helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta));
       }
     }
   }
@@ -515,10 +515,10 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
             manager->swap_out(ptr, obj);
-	    			update_cache_object(ptr);
+	    			//update_cache_object(ptr);
           }
         }
-        cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
+        cur += helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta));
       }
     }
   }
@@ -662,7 +662,7 @@ void FarMemManager::gc_cache() {
   store_release(&gc_master_active, false);
 }
 
-uint64_t FarMemManager::allocate_local_object(bool nt, uint16_t object_size) {
+uint64_t FarMemManager::allocate_local_object(bool nt, uint32_t object_size) {
   preempt_disable();
   std::optional<uint64_t> optional_local_addr;
   bool per_core_local_region_refilled = false;
@@ -692,7 +692,7 @@ retry_allocate_local:
 }
 
 std::optional<uint64_t>
-FarMemManager::allocate_local_object_nb(bool nt, uint16_t object_size) {
+FarMemManager::allocate_local_object_nb(bool nt, uint32_t object_size) {
   preempt_disable();
   std::optional<uint64_t> optional_local_addr;
   bool per_core_local_region_refilled = false;
@@ -719,7 +719,7 @@ retry_allocate_local:
   }
 }
 
-uint64_t FarMemManager::allocate_remote_object(bool nt, uint16_t object_size) {
+uint64_t FarMemManager::allocate_remote_object(bool nt, uint32_t object_size) {
   preempt_disable();
   auto guard = helpers::finally([&]() { preempt_enable(); });
   std::optional<uint64_t> optional_remote_addr;
@@ -795,7 +795,7 @@ void FarMemManager::free_ds_id(uint8_t ds_id) { available_ds_ids_.push(ds_id); }
 
 bool FarMemManager::reallocate_generic_unique_ptr_nb(const DerefScope &scope,
                                                      GenericUniquePtr *ptr,
-                                                     uint16_t new_item_size,
+                                                     uint32_t new_item_size,
                                                      const uint8_t *data_buf) {
   ptr->deref(scope);
   // Allocate the new object space.
@@ -817,11 +817,11 @@ bool FarMemManager::reallocate_generic_unique_ptr_nb(const DerefScope &scope,
     auto remote_object_addr = allocate_remote_object(false, new_obj_size);
     assert(old_obj_id_len == kVanillaPtrObjectIDSize);
     Object(local_object_addr, old_obj_ds_id,
-           static_cast<uint16_t>(new_item_size), kVanillaPtrObjectIDSize,
+           static_cast<uint32_t>(new_item_size), kVanillaPtrObjectIDSize,
            reinterpret_cast<const uint8_t *>(&remote_object_addr));
   } else {
     Object(local_object_addr, old_obj_ds_id,
-           static_cast<uint16_t>(new_item_size), old_obj_id_len,
+           static_cast<uint32_t>(new_item_size), old_obj_id_len,
            reinterpret_cast<const uint8_t *>(old_obj.get_obj_id()));
   }
   wmb();

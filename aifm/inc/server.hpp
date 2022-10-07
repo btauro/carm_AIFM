@@ -19,9 +19,9 @@ public:
                  uint8_t *params);
   void destruct(uint8_t ds_id);
   void read_object(uint8_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id,
-                   uint16_t *data_len, uint8_t *data_buf);
+                   uint32_t *data_len, uint8_t *data_buf);
   void write_object(uint8_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id,
-                    uint16_t data_len, const uint8_t *data_buf);
+                    uint32_t data_len, const uint8_t *data_buf);
   bool remove_object(uint64_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id);
   void compute(uint8_t ds_id, uint8_t opcode, uint16_t input_len,
                const uint8_t *input_buf, uint16_t *output_len,

@@ -16,7 +16,7 @@ ServerHashTable::ServerHashTable(uint32_t param_len, uint8_t *params) {
 ServerHashTable::~ServerHashTable() {}
 
 void ServerHashTable::read_object(uint8_t obj_id_len, const uint8_t *obj_id,
-                                  uint16_t *data_len, uint8_t *data_buf) {
+                                  uint32_t *data_len, uint8_t *data_buf) {
 #ifdef HASHTABLE_EXCLUSIVE
   local_hopscotch_->get(obj_id_len, obj_id, data_len, data_buf,
                         /* remove= */ true);
@@ -27,7 +27,7 @@ void ServerHashTable::read_object(uint8_t obj_id_len, const uint8_t *obj_id,
 }
 
 void ServerHashTable::write_object(uint8_t obj_id_len, const uint8_t *obj_id,
-                                   uint16_t data_len, const uint8_t *data_buf) {
+                                   uint32_t data_len, const uint8_t *data_buf) {
   local_hopscotch_->put(obj_id_len, obj_id, data_len, data_buf);
 }
 
