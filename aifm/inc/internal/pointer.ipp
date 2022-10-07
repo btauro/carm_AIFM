@@ -204,8 +204,9 @@ retry:
     if constexpr (Mut) {
       // set P and D.
       if constexpr (!Shared) {
-        __asm__("movb $0, %0"
-                : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
+        meta().metadata_[FarMemPtrMeta::kPresentPos] = meta().metadata_[FarMemPtrMeta::kPresentPos] & 0xF;
+        //__asm__("movb $0, %0"
+          //      : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
       } else {
         __asm__("movb $2, %0"
                 : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
