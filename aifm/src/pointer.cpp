@@ -38,7 +38,7 @@ void FarMemPtrMeta::gc_copy(uint64_t new_local_object_addr) {
   auto new_local_object_data_addr = new_local_object_addr + Object::kHeaderSize;
   auto new_metadata = (new_local_object_data_addr << kObjectDataAddrBitPos) |
                       (kHotClear + ((kHotThresh - 1) << (8 * kHotPos))) |
-                      (old_metadata & (0xFF << (8 * kPresentPos)));
+                      (old_metadata & (0xF << (4)));
   new_metadata |= (static_cast<uint64_t>(is_shared()) << kSharedBitPos);
   from_uint64_t(new_metadata);
 }

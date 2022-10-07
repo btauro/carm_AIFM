@@ -6,8 +6,8 @@
 namespace far_memory {
 
 // Format:
-//  I) |XXXXXXX !H(1b)|  0   S(1b)!D(1b)00000|E(1b)|  Object Data Addr(47b)  |
-// II) |   DS_ID(8b)  |!P(1b)S(1b)| Object Size(16b) |      ObjectID(38b)    |
+//  I) |XXX !H(1b)  0   S(1b)!D(1b)0|0000|E(1b)|  Object Data Addr(47b)  |
+// II) |   DS_ID(4b)  !P(1b)S(1b)0| Object Size(19b) |      ObjectID(38b)    |
 //
 //                  D: dirty bit.
 //                  P: present.
@@ -29,18 +29,18 @@ private:
   constexpr static uint32_t kObjectIDBitSize = 38;
   constexpr static uint32_t kObjectDataAddrPos = 2;
   constexpr static uint32_t kObjectDataAddrSize = 6;
-  constexpr static uint32_t kDirtyClear = 0x400U;
-  constexpr static uint32_t kPresentClear = 0x100U;
-  constexpr static uint32_t kHotClear = 0x80U;
+  constexpr static uint32_t kDirtyClear = 0x40U;
+  constexpr static uint32_t kPresentClear = 0x10U;
+  constexpr static uint32_t kHotClear = 0x8U;
   constexpr static uint32_t kEvacuationSet = 0x10000U;
   constexpr static uint32_t kObjIDLenPosShift = 9;
   constexpr static uint32_t kObjectDataAddrBitPos = 17;
-  constexpr static uint32_t kObjectSizeBitPos = 10;
+  constexpr static uint32_t kObjectSizeBitPos = 7;
   constexpr static uint32_t kHotPos = 0;
-  constexpr static uint32_t kPresentPos = 1;
+  constexpr static uint32_t kPresentPos = 0;
   constexpr static uint32_t kHotThresh = 2;
   constexpr static uint32_t kDSIDPos = 0;
-  constexpr static uint32_t kSharedBitPos = 9;
+  constexpr static uint32_t kSharedBitPos = 5;
 
   uint8_t metadata_[kSize];
   friend class FarMemManager;
