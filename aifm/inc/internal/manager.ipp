@@ -56,7 +56,7 @@ FORCE_INLINE UniquePtr<T> FarMemManager::allocate_unique_ptr(uint8_t ds_id) {
   auto object_size = Object::kHeaderSize + sizeof(T) + kVanillaPtrObjectIDSize;
   auto local_object_addr = allocate_local_object(false, object_size);
   auto remote_object_addr = allocate_remote_object(false, object_size);
-  Object(local_object_addr, ds_id, static_cast<uint16_t>(sizeof(T)),
+  Object(local_object_addr, ds_id, static_cast<uint32_t>(sizeof(T)),
          static_cast<uint8_t>(sizeof(remote_object_addr)),
          reinterpret_cast<const uint8_t *>(&remote_object_addr));
   auto ptr = UniquePtr<T>(local_object_addr);
@@ -70,7 +70,7 @@ FORCE_INLINE SharedPtr<T> FarMemManager::allocate_shared_ptr(uint8_t ds_id) {
   auto object_size = Object::kHeaderSize + sizeof(T) + kVanillaPtrObjectIDSize;
   auto local_object_addr = allocate_local_object(false, object_size);
   auto remote_object_addr = allocate_remote_object(false, object_size);
-  Object(local_object_addr, ds_id, static_cast<uint16_t>(sizeof(T)),
+  Object(local_object_addr, ds_id, static_cast<uint32_t>(sizeof(T)),
          static_cast<uint8_t>(sizeof(remote_object_addr)),
          reinterpret_cast<const uint8_t *>(&remote_object_addr));
   auto ptr = SharedPtr<T>(local_object_addr);

@@ -56,9 +56,9 @@ FORCE_INLINE uint64_t FarMemPtrMeta::get_object_addr() const {
   return get_object_data_addr() - Object::kHeaderSize;
 }
 
-FORCE_INLINE uint16_t FarMemPtrMeta::get_object_size() const {
+FORCE_INLINE uint32_t FarMemPtrMeta::get_object_size() const {
   assert(!is_present());
-  return to_uint64_t() >> kObjectSizeBitPos;
+  return (to_uint64_t() >> kObjectSizeBitPos) | kObjectSizeMask;
 }
 
 FORCE_INLINE Object FarMemPtrMeta::object() {

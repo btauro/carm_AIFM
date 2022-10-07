@@ -45,7 +45,7 @@ public:
   Region(Region &&other);
   Region &operator=(Region &&other);
   ~Region();
-  std::optional<uint64_t> allocate_object(uint16_t object_size);
+  std::optional<uint64_t> allocate_object(uint32_t object_size);
   bool is_invalid() const;
   void invalidate();
   void reset();

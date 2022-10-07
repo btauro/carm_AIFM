@@ -35,6 +35,7 @@ private:
   constexpr static uint32_t kEvacuationSet = 0x10000U;
   constexpr static uint32_t kObjIDLenPosShift = 9;
   constexpr static uint32_t kObjectDataAddrBitPos = 17;
+  constexpr static uint32_t kObjectSizeMask = (1ULL<<19) -1;
   constexpr static uint32_t kObjectSizeBitPos = 7;
   constexpr static uint32_t kHotPos = 0;
   constexpr static uint32_t kPresentPos = 0;
@@ -76,7 +77,7 @@ public:
   uint64_t get_object_data_addr() const;
   void set_object_data_addr(uint64_t new_local_object_addr);
   uint64_t get_object_addr() const;
-  uint16_t get_object_size() const;
+  uint32_t get_object_size() const;
   Object object();
   uint8_t get_ds_id() const;
   bool is_null() const;
@@ -85,7 +86,7 @@ public:
   void from_uint64_t(uint64_t val);
   void mutator_copy(uint64_t new_local_object_addr);
   void gc_copy(uint64_t new_local_object_addr);
-  void gc_wb(uint8_t ds_id, uint16_t object_size, uint64_t obj_id);
+  void gc_wb(uint8_t ds_id, uint32_t object_size, uint64_t obj_id);
   static FarMemPtrMeta *from_object(const Object &object);
 };
 

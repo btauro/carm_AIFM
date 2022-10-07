@@ -453,6 +453,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
           }
 }
         }
+	std::cout<<"obj size "<<obj.size()<<" Farmem size "<<sizeof(FarMemPtrMeta) << " slign "<<helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta))<<"\n";
         cur += helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta));
       }
     }
@@ -518,6 +519,7 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
 	    			//update_cache_object(ptr);
           }
         }
+	std::cout<<"obj size "<<obj.size()<<" Farmem size "<<sizeof(FarMemPtrMeta) << " slign "<<helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta))<<"\n";
         cur += helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta));
       }
     }
