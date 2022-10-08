@@ -36,6 +36,7 @@ private:
   constexpr static uint32_t kObjIDLenPosShift = 9;
   constexpr static uint32_t kObjectDataAddrBitPos = 17;
   constexpr static uint32_t kObjectSizeMask = (1ULL<<19) -1;
+  constexpr static uint32_t kDSIDMask = 0xf;
   constexpr static uint32_t kObjectSizeBitPos = 7;
   constexpr static uint32_t kHotPos = 0;
   constexpr static uint32_t kPresentPos = 0;

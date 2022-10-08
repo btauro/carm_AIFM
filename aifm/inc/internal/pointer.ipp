@@ -165,7 +165,7 @@ FORCE_INLINE bool FarMemPtrMeta::operator!=(const FarMemPtrMeta &other) const {
 
 FORCE_INLINE uint8_t FarMemPtrMeta::get_ds_id() const {
   assert(!is_present());
-  return metadata_[kDSIDPos];
+  return (metadata_[kDSIDPos] & FarMemPtrMeta::kDSIDMask);
 }
 
 template <bool Mut, bool Nt, bool Shared>
