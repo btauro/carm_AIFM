@@ -264,7 +264,7 @@ retry:
                 : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
       }
     }
-    meta().metadata_[FarMemPtrMeta::kHotPos]--;
+    meta().metadata_[FarMemPtrMeta::kHotPos] =  (meta().metadata_[FarMemPtrMeta::kHotPos]  - 1) & FarMemPtrMeta::kHotMask;
   }
 
   // 4) shrq.

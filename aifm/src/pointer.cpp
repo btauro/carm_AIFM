@@ -2,6 +2,7 @@
 #include "deref_scope.hpp"
 #include "helpers.hpp"
 #include "manager.hpp"
+#include <iostream>
 
 #include <cstdint>
 
@@ -45,6 +46,7 @@ void FarMemPtrMeta::gc_copy(uint64_t new_local_object_addr) {
 
 void FarMemPtrMeta::gc_wb(uint8_t ds_id, uint32_t object_size,
                           uint64_t obj_id) {
+  std::cout<<"write back obj size" <<  (static_cast<uint64_t>(object_size) << kObjectSizeBitPos)<<"\n";
   assert(obj_id < (1ULL << kObjectIDBitSize));
   auto new_metadata =
       (obj_id << kObjectIDBitPos) |

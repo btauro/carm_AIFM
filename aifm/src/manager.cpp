@@ -285,6 +285,7 @@ void FarMemManager::swap_in(bool nt, GenericFarMemPtr *ptr) {
     wmb();
     obj.init(ds_id, obj_data_len, sizeof(obj_id),
              reinterpret_cast<uint8_t *>(&obj_id));
+    std::cout<<"swap in data len "<<obj_data_len<<"\n";
     if (!meta.is_shared()) {
       meta.set_present(obj_addr);
       //meta.metadata_[FarMemPtrMeta::kHotPos]--;
@@ -445,7 +446,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
 
             if (!ptr->meta().is_shared()) {
               ptr->meta().set_evacuation();
-	    			//  update_cache_object(ptr);
+	    			  //update_cache_object(ptr);
             } else {
               reinterpret_cast<GenericSharedPtr *>(ptr)->traverse(
                   [](GenericSharedPtr *ptr) { ptr->meta().set_evacuation(); });
@@ -453,7 +454,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
           }
 }
         }
-	std::cout<<"obj size "<<obj.size()<<" Farmem size "<<sizeof(FarMemPtrMeta) << " slign "<<helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta))<<"\n";
+	//std::cout<<"obj size "<<obj.size()<<" Farmem size "<<sizeof(FarMemPtrMeta) << " slign "<<helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta))<<"\n";
         cur += helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta));
       }
     }
@@ -519,7 +520,7 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
 	    			//update_cache_object(ptr);
           }
         }
-	std::cout<<"obj size "<<obj.size()<<" Farmem size "<<sizeof(FarMemPtrMeta) << " slign "<<helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta))<<"\n";
+//	std::cout<<"obj size "<<obj.size()<<" Farmem size "<<sizeof(FarMemPtrMeta) << " slign "<<helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta))<<"\n";
         cur += helpers::align_to((uint32_t)obj.size(), (uint32_t)sizeof(FarMemPtrMeta));
       }
     }

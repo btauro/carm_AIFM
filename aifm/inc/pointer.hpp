@@ -37,6 +37,7 @@ private:
   constexpr static uint32_t kObjectDataAddrBitPos = 17;
   constexpr static uint32_t kObjectSizeMask = (1ULL<<19) -1;
   constexpr static uint32_t kDSIDMask = 0xf;
+  constexpr static uint32_t kHotMask = 0xf;
   constexpr static uint32_t kObjectSizeBitPos = 7;
   constexpr static uint32_t kHotPos = 0;
   constexpr static uint32_t kPresentPos = 0;
@@ -54,7 +55,7 @@ private:
 public:
   constexpr static uint64_t kNull = kPresentClear;
   constexpr static uint64_t kNullMask =
-      ((~static_cast<uint64_t>(0)) << (8 * kPresentPos));
+      ((~static_cast<uint64_t>(0)) << (4));
 
   FarMemPtrMeta(const FarMemPtrMeta &other);
   FarMemPtrMeta(bool shared, uint64_t object_addr);

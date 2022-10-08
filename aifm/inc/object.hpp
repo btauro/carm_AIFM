@@ -36,9 +36,10 @@ public:
   constexpr static uint32_t kDSIDSize = 1;
   constexpr static uint32_t kIDLenSize = 1;
   constexpr static uint32_t kDataLenSize = 4;
+  constexpr static uint32_t kDataLenMask = (1UL<<19) -1;
   constexpr static uint32_t kHeaderSize =
       kPtrAddrSize + kDataLenSize + kDSIDSize + kIDLenSize;
-  constexpr static uint32_t kMaxObjectSize = ((1<<19) - 1);
+  constexpr static uint32_t kMaxObjectSize = ((1UL<<19) - 1);
   constexpr static uint32_t kMaxObjectIDSize = (1 << (8 * kIDLenSize)) - 1;
   constexpr static uint32_t kMaxObjectDataSize =
       kMaxObjectSize - kHeaderSize - kMaxObjectIDSize;

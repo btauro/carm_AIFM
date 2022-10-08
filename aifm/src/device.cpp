@@ -8,6 +8,7 @@ extern "C" {
 #include "stats.hpp"
 
 #include <cstring>
+#include <iostream>
 
 namespace far_memory {
 
@@ -98,6 +99,8 @@ TCPDevice::~TCPDevice() {
 void TCPDevice::read_object(uint8_t ds_id, uint8_t obj_id_len,
                             const uint8_t *obj_id, uint32_t *data_len,
                             uint8_t *data_buf) {
+  
+   std::cout<<"read object DS ID "<<ds_id<<"\n";
   auto remote_slave = shared_pool_.pop();
   _read_object(remote_slave, ds_id, obj_id_len, obj_id, data_len, data_buf);
   shared_pool_.push(remote_slave);
@@ -106,6 +109,7 @@ void TCPDevice::read_object(uint8_t ds_id, uint8_t obj_id_len,
 void TCPDevice::write_object(uint8_t ds_id, uint8_t obj_id_len,
                              const uint8_t *obj_id, uint32_t data_len,
                              const uint8_t *data_buf) {
+   std::cout<<"write object DS ID "<<ds_id<<"\n";
   auto remote_slave = shared_pool_.pop();
   _write_object(remote_slave, ds_id, obj_id_len, obj_id, data_len, data_buf);
   shared_pool_.push(remote_slave);
@@ -167,6 +171,7 @@ void TCPDevice::_read_object(tcpconn_t *remote_slave, uint8_t ds_id,
 
   helpers::tcp_read_until(remote_slave, data_len, sizeof(*data_len));
   if (*data_len) {
+    std::cout<<"read object Data len "<<data_len<<"\n";
     helpers::tcp_read_until(remote_slave, data_buf, *data_len);
   }
 
@@ -183,6 +188,7 @@ void TCPDevice::_write_object(tcpconn_t *remote_slave, uint8_t ds_id,
                               uint32_t data_len, const uint8_t *data_buf) {
   Stats::start_measure_write_object_cycles();
 
+   // std::cout<<"write object Data len "<<data_len<<"\n";
   uint8_t req[kOpcodeSize + Object::kDSIDSize + Object::kIDLenSize +
               Object::kDataLenSize + Object::kMaxObjectIDSize + kLargeDataSize];
 
