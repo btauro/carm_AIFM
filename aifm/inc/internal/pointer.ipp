@@ -58,7 +58,7 @@ FORCE_INLINE uint64_t FarMemPtrMeta::get_object_addr() const {
 
 FORCE_INLINE uint32_t FarMemPtrMeta::get_object_size() const {
   assert(!is_present());
-  return (to_uint64_t() >> kObjectSizeBitPos) | kObjectSizeMask;
+  return (to_uint64_t() >> kObjectSizeBitPos) & kObjectSizeMask;
 }
 
 FORCE_INLINE Object FarMemPtrMeta::object() {
@@ -165,7 +165,7 @@ FORCE_INLINE bool FarMemPtrMeta::operator!=(const FarMemPtrMeta &other) const {
 
 FORCE_INLINE uint8_t FarMemPtrMeta::get_ds_id() const {
   assert(!is_present());
-  return (metadata_[kDSIDPos] & FarMemPtrMeta::kDSIDMask);
+  return (metadata_[kDSIDPos]);
 }
 
 template <bool Mut, bool Nt, bool Shared>
@@ -256,15 +256,14 @@ retry:
     if constexpr (Mut) {
       // set P and D.
       if constexpr (!Shared) {
-        meta().metadata_[FarMemPtrMeta::kPresentPos] = meta().metadata_[FarMemPtrMeta::kPresentPos] & 0xF;
-        //__asm__("movb $0, %0"
-          //      : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
+        __asm__("movb $0, %0"
+               : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
       } else {
         __asm__("movb $2, %0"
                 : "=m"(meta().metadata_[FarMemPtrMeta::kPresentPos]));
       }
     }
-    meta().metadata_[FarMemPtrMeta::kHotPos] =  (meta().metadata_[FarMemPtrMeta::kHotPos]  - 1) & FarMemPtrMeta::kHotMask;
+    meta().metadata_[FarMemPtrMeta::kHotPos]--;
   }
 
   // 4) shrq.
