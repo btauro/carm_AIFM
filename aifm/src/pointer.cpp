@@ -43,7 +43,7 @@ void FarMemPtrMeta::gc_copy(uint64_t new_local_object_addr) {
   from_uint64_t(new_metadata);
 }
 
-void FarMemPtrMeta::gc_wb(uint8_t ds_id, uint16_t object_size,
+void FarMemPtrMeta::gc_wb(uint8_t ds_id, uint32_t object_size,
                           uint64_t obj_id) {
   assert(obj_id < (1ULL << kObjectIDBitSize));
   auto new_metadata =

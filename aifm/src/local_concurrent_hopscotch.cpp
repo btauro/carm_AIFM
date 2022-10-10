@@ -37,7 +37,7 @@ void LocalGenericConcurrentHopscotch::do_remove(BucketEntry *bucket,
 }
 
 void LocalGenericConcurrentHopscotch::get(uint8_t key_len, const uint8_t *key,
-                                          uint16_t *val_len, uint8_t *val,
+                                          uint32_t *val_len, uint8_t *val,
                                           bool remove) {
   uint32_t hash = hash_32(static_cast<const void *>(key), key_len);
   uint32_t bucket_idx = hash & kHashMask_;
@@ -120,7 +120,7 @@ remove:
 }
 
 bool LocalGenericConcurrentHopscotch::put(uint8_t key_len, const uint8_t *key,
-                                          uint16_t val_len,
+                                          uint32_t val_len,
                                           const uint8_t *val) {
   uint32_t hash = hash_32(static_cast<const void *>(key), key_len);
   uint32_t bucket_idx = hash & kHashMask_;

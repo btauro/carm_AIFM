@@ -83,7 +83,7 @@ void GenericConcurrentHopscotch::do_evac_notifier(EvacNotifierMeta meta) {
 
 void GenericConcurrentHopscotch::forward_get(uint8_t key_len,
                                              const uint8_t *key,
-                                             uint16_t *val_len, uint8_t *val) {
+                                             uint32_t *val_len, uint8_t *val) {
   // Cannot find the key locally, so forward the request to the remote agent.
   FarMemManagerFactory::get()->read_object(ds_id_, key_len, key, val_len, val);
   if (*val_len) {
@@ -100,7 +100,7 @@ FORCE_INLINE void *deref(GenericUniquePtr &ptr, bool mut) {
 }
 
 bool GenericConcurrentHopscotch::_put(uint8_t key_len, const uint8_t *key,
-                                      uint16_t val_len, const uint8_t *val,
+                                      uint32_t val_len, const uint8_t *val,
                                       bool swap_in) {
   uint32_t hash = hash_32(static_cast<const void *>(key), key_len);
   uint32_t bucket_idx = hash & kHashMask_;

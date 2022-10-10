@@ -81,7 +81,7 @@ void process_read_object(tcpconn_t *c) {
   auto *object_id = &req[Object::kDSIDSize + Object::kIDLenSize];
   helpers::tcp_read_until(c, object_id, object_id_len);
 
-  auto *data_len = reinterpret_cast<uint16_t *>(&resp);
+  auto *data_len = reinterpret_cast<uint32_t *>(&resp);
   auto *data_buf = &resp[Object::kDataLenSize];
   server.read_object(ds_id, object_id_len, object_id, data_len, data_buf);
 
@@ -102,7 +102,7 @@ void process_write_object(tcpconn_t *c) {
 
   auto ds_id = *const_cast<uint8_t *>(&req[0]);
   auto object_id_len = *const_cast<uint8_t *>(&req[Object::kDSIDSize]);
-  auto data_len = *reinterpret_cast<uint16_t *>(
+  auto data_len = *reinterpret_cast<uint32_t *>(
       &req[Object::kDSIDSize + Object::kIDLenSize]);
 
   helpers::tcp_read_until(

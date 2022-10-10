@@ -7,7 +7,7 @@ namespace far_memory {
 
 // Format:
 //  I) |XXXXXXX !H(1b)|  0   S(1b)!D(1b)00000|E(1b)|  Object Data Addr(47b)  |
-// II) |   DS_ID(8b)  |!P(1b)S(1b)| Object Size(16b) |      ObjectID(38b)    |
+// II) |   DS_ID(8b)  |!P(1b)S(1b)| Object Size(20b) |      ObjectID(34b)    |
 //
 //                  D: dirty bit.
 //                  P: present.
@@ -25,14 +25,15 @@ class FarMemPtrMeta {
 private:
   constexpr static uint32_t kSize = 8;
   constexpr static uint32_t kEvacuationPos = 2;
-  constexpr static uint32_t kObjectIDBitPos = 26;
-  constexpr static uint32_t kObjectIDBitSize = 38;
+  constexpr static uint32_t kObjectIDBitPos = 30;
+  constexpr static uint32_t kObjectIDBitSize = 34;
   constexpr static uint32_t kObjectDataAddrPos = 2;
   constexpr static uint32_t kObjectDataAddrSize = 6;
   constexpr static uint32_t kDirtyClear = 0x400U;
   constexpr static uint32_t kPresentClear = 0x100U;
   constexpr static uint32_t kHotClear = 0x80U;
   constexpr static uint32_t kEvacuationSet = 0x10000U;
+  constexpr static uint32_t kObjectSizeMask = (1<<20) -1;
   constexpr static uint32_t kObjIDLenPosShift = 9;
   constexpr static uint32_t kObjectDataAddrBitPos = 17;
   constexpr static uint32_t kObjectSizeBitPos = 10;
@@ -76,7 +77,7 @@ public:
   uint64_t get_object_data_addr() const;
   void set_object_data_addr(uint64_t new_local_object_addr);
   uint64_t get_object_addr() const;
-  uint16_t get_object_size() const;
+  uint32_t get_object_size() const;
   Object object();
   uint8_t get_ds_id() const;
   bool is_null() const;
@@ -85,7 +86,7 @@ public:
   void from_uint64_t(uint64_t val);
   void mutator_copy(uint64_t new_local_object_addr);
   void gc_copy(uint64_t new_local_object_addr);
-  void gc_wb(uint8_t ds_id, uint16_t object_size, uint64_t obj_id);
+  void gc_wb(uint8_t ds_id, uint32_t object_size, uint64_t obj_id);
   static FarMemPtrMeta *from_object(const Object &object);
 };
 

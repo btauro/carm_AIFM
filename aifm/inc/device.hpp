@@ -20,10 +20,10 @@ public:
   uint64_t get_far_mem_size() const { return far_mem_size_; }
   uint32_t get_prefetch_win_size() const { return prefetch_win_size_; }
   virtual void read_object(uint8_t ds_id, uint8_t obj_id_len,
-                           const uint8_t *obj_id, uint16_t *data_len,
+                           const uint8_t *obj_id, uint32_t *data_len,
                            uint8_t *data_buf) = 0;
   virtual void write_object(uint8_t ds_id, uint8_t obj_id_len,
-                            const uint8_t *obj_id, uint16_t data_len,
+                            const uint8_t *obj_id, uint32_t data_len,
                             const uint8_t *data_buf) = 0;
   virtual bool remove_object(uint64_t ds_id, uint8_t obj_id_len,
                              const uint8_t *obj_id) = 0;
@@ -44,9 +44,9 @@ public:
   FakeDevice(uint64_t far_mem_size);
   ~FakeDevice();
   void read_object(uint8_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id,
-                   uint16_t *data_len, uint8_t *data_buf);
+                   uint32_t *data_len, uint8_t *data_buf);
   void write_object(uint8_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id,
-                    uint16_t data_len, const uint8_t *data_buf);
+                    uint32_t data_len, const uint8_t *data_buf);
   bool remove_object(uint64_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id);
   void construct(uint8_t ds_type, uint8_t ds_id, uint8_t param_len,
                  uint8_t *params);
@@ -64,10 +64,10 @@ private:
   SharedPool<tcpconn_t *> shared_pool_;
 
   void _read_object(tcpconn_t *remote_slave, uint8_t ds_id, uint8_t obj_id_len,
-                    const uint8_t *obj_id, uint16_t *data_len,
+                    const uint8_t *obj_id, uint32_t *data_len,
                     uint8_t *data_buf);
   void _write_object(tcpconn_t *remote_slave, uint8_t ds_id, uint8_t obj_id_len,
-                     const uint8_t *obj_id, uint16_t data_len,
+                     const uint8_t *obj_id, uint32_t data_len,
                      const uint8_t *data_buf);
   bool _remove_object(tcpconn_t *remote_slave, uint64_t ds_id,
                       uint8_t obj_id_len, const uint8_t *obj_id);
@@ -108,9 +108,9 @@ public:
   TCPDevice(netaddr raddr, uint32_t num_connections, uint64_t far_mem_size);
   ~TCPDevice();
   void read_object(uint8_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id,
-                   uint16_t *data_len, uint8_t *data_buf);
+                   uint32_t *data_len, uint8_t *data_buf);
   void write_object(uint8_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id,
-                    uint16_t data_len, const uint8_t *data_buf);
+                    uint32_t data_len, const uint8_t *data_buf);
   bool remove_object(uint64_t ds_id, uint8_t obj_id_len, const uint8_t *obj_id);
   void construct(uint8_t ds_type, uint8_t ds_id, uint8_t param_len,
                  uint8_t *params);
