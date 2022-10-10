@@ -27,15 +27,15 @@ private:
   constexpr static uint32_t kPtrAddrPos = 0;
   constexpr static uint32_t kPtrAddrSize = 6;
   constexpr static uint32_t kDataLenPos = 6;
-  constexpr static uint32_t kDSIDPos = 9;
-  constexpr static uint32_t kIDLenPos = 10;
+  constexpr static uint32_t kDSIDPos = 10;
+  constexpr static uint32_t kIDLenPos = 11;
   // It stores the address of the object (which is stored in the local region).
   uint64_t addr_;
 
 public:
   constexpr static uint32_t kDSIDSize = 1;
   constexpr static uint32_t kIDLenSize = 1;
-  constexpr static uint32_t kDataLenSize = 3;
+  constexpr static uint32_t kDataLenSize = 4;
   constexpr static uint32_t kHeaderSize =
       kPtrAddrSize + kDataLenSize + kDSIDSize + kIDLenSize;
   constexpr static uint32_t kMaxObjectSize =

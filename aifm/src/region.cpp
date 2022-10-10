@@ -22,7 +22,7 @@ Region &Region::operator=(Region &&other) {
   return *this;
 }
 
-std::optional<uint64_t> Region::allocate_object(uint16_t object_size) {
+std::optional<uint64_t> Region::allocate_object(uint32_t object_size) {
   // Allocated object's address must be aligned with sizeof(FarMemPtrMeta).
   object_size = helpers::align_to(object_size, sizeof(FarMemPtrMeta));
 

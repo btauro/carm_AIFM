@@ -200,7 +200,7 @@ static FORCE_INLINE netaddr str_to_netaddr(std::string ip_addr_port) {
 
 static FORCE_INLINE void tcp_read_until(tcpconn_t *c, void *buf,
                                         size_t expect) {
-  size_t real = tcp_read(c, reinterpret_cast<uint8_t *>(buf), expect);
+  size_t real = tcp_read(c, reinterpret_cast<uint8_t *>(buf), 32768);
   if (unlikely(real != expect)) {
     // Slow path.
     do {
@@ -212,7 +212,7 @@ static FORCE_INLINE void tcp_read_until(tcpconn_t *c, void *buf,
 
 static FORCE_INLINE void tcp_write_until(tcpconn_t *c, const void *buf,
                                          size_t expect) {
-  size_t real = tcp_write(c, reinterpret_cast<const uint8_t *>(buf), expect);
+  size_t real = tcp_write(c, reinterpret_cast<const uint8_t *>(buf), 32768);
   if (unlikely(real != expect)) {
     // Slow path.
     do {
@@ -227,7 +227,7 @@ static FORCE_INLINE void tcp_write2_until(tcpconn_t *c, const void *buf_0,
                                           size_t expect_1) {
   iovec iovecs[2];
   iovecs[0] = {.iov_base = const_cast<void *>(buf_0), .iov_len = expect_0};
-  iovecs[1] = {.iov_base = const_cast<void *>(buf_1), .iov_len = expect_1};
+  iovecs[1] = {.iov_base = const_cast<void *>(buf_1), .iov_len = 32768};
   size_t real = tcp_writev(c, iovecs, 2);
   if (unlikely(real != expect_0 + expect_1)) {
     // Slow path.
