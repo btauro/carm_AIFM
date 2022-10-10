@@ -38,10 +38,10 @@ public:
   constexpr static uint32_t kDataLenSize = 2;
   constexpr static uint32_t kHeaderSize =
       kPtrAddrSize + kDataLenSize + kDSIDSize + kIDLenSize;
-  constexpr static uint16_t kMaxObjectSize =
-      std::numeric_limits<uint16_t>::max();
-  constexpr static uint16_t kMaxObjectIDSize = (1 << (8 * kIDLenSize)) - 1;
-  constexpr static uint16_t kMaxObjectDataSize =
+  constexpr static uint32_t kMaxObjectSize =
+      (1<<20) - 1;
+  constexpr static uint32_t kMaxObjectIDSize = (1 << (8 * kIDLenSize)) - 1;
+  constexpr static uint32_t kMaxObjectDataSize =
       kMaxObjectSize - kHeaderSize - kMaxObjectIDSize;
 
   Object();
@@ -65,7 +65,7 @@ public:
   void set_data_len(uint32_t data_len);
   void set_obj_id(const uint8_t *id, uint8_t id_len);
   void set_obj_id_len(uint8_t id_len);
-  uint16_t size() const;
+  uint32_t size() const;
   bool is_freed() const;
   void free();
 };

@@ -28,7 +28,7 @@ FORCE_INLINE uint64_t LocalConcurrentHopscotch<K, V>::size() const {
 template <typename K, typename V>
 FORCE_INLINE std::optional<V>
 LocalConcurrentHopscotch<K, V>::find(const K &key) {
-  uint16_t val_len;
+  uint32_t val_len;
   V val;
   get(sizeof(key), &key, &val_len, &val);
   if (val_len == 0) {

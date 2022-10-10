@@ -56,7 +56,7 @@ FORCE_INLINE void Object::free() {
 }
 
 FORCE_INLINE void Object::set_data_len(uint32_t data_len) {
-  auto *ptr = reinterpret_cast<uint16_t *>(addr_ + kDataLenPos);
+  auto *ptr = reinterpret_cast<uint32_t *>(addr_ + kDataLenPos);
   *ptr = data_len;
 }
 
@@ -93,7 +93,7 @@ FORCE_INLINE uint64_t Object::get_data_addr() const {
   return addr_ + kHeaderSize;
 }
 
-FORCE_INLINE uint16_t Object::size() const {
+FORCE_INLINE uint32_t Object::size() const {
   return kHeaderSize + get_data_len() + get_obj_id_len();
 }
 } // namespace far_memory

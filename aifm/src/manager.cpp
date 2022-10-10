@@ -445,7 +445,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
 
             if (!ptr->meta().is_shared()) {
               ptr->meta().set_evacuation();
-	    			  //update_cache_object(ptr);
+	    			  update_cache_object(ptr);
             } else {
               reinterpret_cast<GenericSharedPtr *>(ptr)->traverse(
                   [](GenericSharedPtr *ptr) { ptr->meta().set_evacuation(); });
@@ -453,7 +453,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
           }
 }
         }
-        cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
+        cur += helpers::align_to((uint64_t)obj.size(), (uint64_t)sizeof(FarMemPtrMeta));
       }
     }
   }
@@ -515,10 +515,10 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
             manager->swap_out(ptr, obj);
-	    			//update_cache_object(ptr);
+	    			update_cache_object(ptr);
           }
         }
-        cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
+        cur += helpers::align_to((uint64_t)obj.size(), (uint64_t)sizeof(FarMemPtrMeta));
       }
     }
   }
