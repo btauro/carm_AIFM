@@ -3,6 +3,7 @@
 #include "helpers.hpp"
 
 #include <cstring>
+#include <iostream>
 
 namespace far_memory {
 
@@ -62,6 +63,7 @@ FORCE_INLINE void Object::set_data_len(uint32_t data_len) {
 
 FORCE_INLINE uint32_t Object::get_data_len() const {
   auto *ptr = reinterpret_cast<uint32_t *>(addr_ + kDataLenPos);
+  printf("%d\n", *ptr);
   return *ptr;
 }
 
