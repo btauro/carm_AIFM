@@ -63,8 +63,7 @@ FORCE_INLINE void Object::set_data_len(uint32_t data_len) {
 
 FORCE_INLINE uint32_t Object::get_data_len() const {
   auto *ptr = reinterpret_cast<uint32_t *>(addr_ + kDataLenPos);
-  printf("%d\n", *ptr);
-  return *ptr;
+  return( *ptr & kMaxObjectSize);
 }
 
 FORCE_INLINE void Object::set_obj_id(const uint8_t *id, uint8_t id_len) {
