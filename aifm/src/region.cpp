@@ -24,7 +24,7 @@ Region &Region::operator=(Region &&other) {
 
 std::optional<uint64_t> Region::allocate_object(uint32_t object_size) {
   // Allocated object's address must be aligned with sizeof(FarMemPtrMeta).
-  object_size = helpers::align_to(object_size, sizeof(FarMemPtrMeta));
+  object_size = helpers::align_to((uint32_t)object_size, (uint32_t)sizeof(FarMemPtrMeta));
 
   if (!is_invalid()) {
     uint32_t start = first_free_byte_idx_;

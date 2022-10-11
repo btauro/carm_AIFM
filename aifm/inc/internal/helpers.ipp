@@ -198,21 +198,39 @@ static FORCE_INLINE netaddr str_to_netaddr(std::string ip_addr_port) {
                  .port = static_cast<uint16_t>(port)};
 }
 
+#define CHUNK_SIZE 32768
 static FORCE_INLINE void tcp_read_until(tcpconn_t *c, void *buf,
-                                        size_t expect) {
-  size_t real = tcp_read(c, reinterpret_cast<uint8_t *>(buf), 32768);
-  if (unlikely(real != expect)) {
-    // Slow path.
-    do {
-      real +=
-          tcp_read(c, reinterpret_cast<uint8_t *>(buf) + real, expect - real);
-    } while (real < expect);
-  }
+		size_t expect) {
+	size_t real = 0;
+	if (expect < CHUNK_SIZE) {
+		real = tcp_read(c, reinterpret_cast<uint8_t *>(buf), expect);
+		if (unlikely(real != expect)) {
+			// Slow path.
+			do {
+				real +=
+					tcp_read(c, reinterpret_cast<uint8_t *>(buf) + real, expect - real);
+			} while (real < expect);
+		}
+	}
+	else {
+
+		real = tcp_read(c, reinterpret_cast<uint8_t *>(buf), CHUNK_SIZE);
+		if (unlikely(real != expect)) {
+			// Slow path.
+			do {
+				if ((expect - real) > CHUNK_SIZE)
+				real += tcp_read(c, reinterpret_cast<uint8_t *>(buf) + real, CHUNK_SIZE);
+				else
+				real += tcp_read(c, reinterpret_cast<uint8_t *>(buf) + real, expect - real);
+			} while (real < expect);
+		}
+
+	}
 }
 
 static FORCE_INLINE void tcp_write_until(tcpconn_t *c, const void *buf,
                                          size_t expect) {
-  size_t real = tcp_write(c, reinterpret_cast<const uint8_t *>(buf), 32768);
+  size_t real = tcp_write(c, reinterpret_cast<const uint8_t *>(buf), expect);
   if (unlikely(real != expect)) {
     // Slow path.
     do {
@@ -227,15 +245,19 @@ static FORCE_INLINE void tcp_write2_until(tcpconn_t *c, const void *buf_0,
                                           size_t expect_1) {
   iovec iovecs[2];
   iovecs[0] = {.iov_base = const_cast<void *>(buf_0), .iov_len = expect_0};
-  iovecs[1] = {.iov_base = const_cast<void *>(buf_1), .iov_len = 32768};
+  iovecs[1] = {.iov_base = const_cast<void *>(buf_1), .iov_len = 32768 - expect_0};
   size_t real = tcp_writev(c, iovecs, 2);
   if (unlikely(real != expect_0 + expect_1)) {
     // Slow path.
     do {
       if (likely(real >= expect_0)) {
+		if ((expect_1 - (real - expect_0)) > CHUNK_SIZE)
         real += tcp_write(
             c, reinterpret_cast<const uint8_t *>(buf_1) + (real - expect_0),
-            expect_1 - (real - expect_0));
+            CHUNK_SIZE);
+	else
+        real += tcp_write(
+            c, reinterpret_cast<const uint8_t *>(buf_1) + (real - expect_0), expect_1 - (real - expect_0));
       } else {
         iovecs[0].iov_base = reinterpret_cast<void *>(
             reinterpret_cast<uint8_t *>(iovecs[0].iov_base) + real);

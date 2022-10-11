@@ -8,6 +8,7 @@ extern "C" {
 #include "stats.hpp"
 
 #include <cstring>
+#include <iostream>
 
 namespace far_memory {
 
@@ -149,6 +150,7 @@ void TCPDevice::compute(uint8_t ds_id, uint8_t opcode, uint16_t input_len,
 void TCPDevice::_read_object(tcpconn_t *remote_slave, uint8_t ds_id,
                              uint8_t obj_id_len, const uint8_t *obj_id,
                              uint32_t *data_len, uint8_t *data_buf) {
+	  printf("readd object \n"); 
   Stats::start_measure_read_object_cycles();
   
   uint8_t req[kOpcodeSize + Object::kDSIDSize + Object::kIDLenSize +
@@ -170,6 +172,7 @@ void TCPDevice::_read_object(tcpconn_t *remote_slave, uint8_t ds_id,
     helpers::tcp_read_until(remote_slave, data_buf, *data_len);
   }
 
+  printf("readd object done\n"); 
   Stats::finish_measure_read_object_cycles();
 }
 
@@ -181,6 +184,7 @@ void TCPDevice::_read_object(tcpconn_t *remote_slave, uint8_t ds_id,
 void TCPDevice::_write_object(tcpconn_t *remote_slave, uint8_t ds_id,
                               uint8_t obj_id_len, const uint8_t *obj_id,
                               uint32_t data_len, const uint8_t *data_buf) {
+  //printf("write object \n"); 
   Stats::start_measure_write_object_cycles();
 
   uint8_t req[kOpcodeSize + Object::kDSIDSize + Object::kIDLenSize +
@@ -214,6 +218,7 @@ void TCPDevice::_write_object(tcpconn_t *remote_slave, uint8_t ds_id,
 
   uint8_t ack;
   helpers::tcp_read_until(remote_slave, &ack, sizeof(ack));
+  //printf("write object %d done\n", data_len); 
 
   Stats::finish_measure_write_object_cycles();
 }
