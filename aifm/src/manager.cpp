@@ -444,7 +444,7 @@ void GCParallelMarker::slave_fn(uint32_t tid) {
 
             if (!ptr->meta().is_shared()) {
               ptr->meta().set_evacuation();
-	    			  update_cache_object(ptr);
+	    			  //update_cache_object(ptr);
             } else {
               reinterpret_cast<GenericSharedPtr *>(ptr)->traverse(
                   [](GenericSharedPtr *ptr) { ptr->meta().set_evacuation(); });
