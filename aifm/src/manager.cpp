@@ -32,7 +32,6 @@ extern "C" {
 #include <utility>
 #include <vector>
 
-extern void delete_cache_object(far_memory::GenericFarMemPtr * meta);
 extern void update_cache_object(far_memory::GenericFarMemPtr * meta);
 namespace far_memory {
 ObjLocker FarMemManager::obj_locker_;
@@ -515,7 +514,6 @@ void GCParallelWriteBacker::slave_fn(uint32_t tid) {
             auto *ptr =
                 reinterpret_cast<GenericFarMemPtr *>(obj.get_ptr_addr());
             manager->swap_out(ptr, obj);
-	    			update_cache_object(ptr);
           }
         }
         cur += helpers::align_to(obj.size(), sizeof(FarMemPtrMeta));
